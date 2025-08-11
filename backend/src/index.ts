@@ -2,6 +2,7 @@ import express, { Express, Request, Response } from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import { PrismaClient } from '@prisma/client';
+import { config } from './config/config.js';
 import facilityRoutes from './routes/facility.routes.js';
 import courtRoutes from './routes/court.routes.js';
 import bookingRoutes from './routes/booking.routes.js';
@@ -13,13 +14,10 @@ export const prisma = new PrismaClient();
 
 // Initialize the express app
 const app: Express = express();
-const PORT = process.env['PORT'] || 8000;
+const PORT = config.server.port;
 
 // Middleware
-app.use(cors({
-    origin: 'http://localhost:3000', // Your frontend URL
-    credentials: true,
-}));
+app.use(cors(config.cors));
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: true }));
