@@ -1,10 +1,9 @@
 import { Router } from 'express';
-import { getAllCourts, createCourt } from '../controllers/court.controller.js';
-import { authMiddleware } from '../middlewares/auth.middleware.js';
+import { createCourt, getCourts } from '../controllers/court.controller.js';
 
 const router = Router();
 
-router.get('/', getAllCourts);
-router.post('/', authMiddleware, createCourt);
+router.post('/', createCourt);
+router.get('/', getCourts);
 
 export default router;
