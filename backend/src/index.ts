@@ -4,6 +4,8 @@ import cookieParser from 'cookie-parser';
 import { PrismaClient } from '@prisma/client';
 import facilityRoutes from './routes/facility.routes.js';
 import courtRoutes from './routes/court.routes.js';
+import bookingRoutes from './routes/booking.routes.js';
+import paymentRoutes from './routes/payment.routes.js';
 
 // Create an instance of PrismaClient
 export const prisma = new PrismaClient();
@@ -24,6 +26,8 @@ app.use(express.urlencoded({ extended: true }));
 // Routes
 app.use('/api/facilities', facilityRoutes);
 app.use('/api/courts', courtRoutes);
+app.use('/api/bookings', bookingRoutes);
+app.use('/api/payments', paymentRoutes);
 
 // Simple route for testing
 app.get('/', (req: Request, res: Response) => {
