@@ -1,10 +1,27 @@
 import { Request, Response } from 'express';
 import { prisma } from '../index.js';
 
-// Create a new facility
+// Get all facilities
+export const getFacilities = async (req: Request, res: Response) => {
+    try {
+        const facilities = await prisma.facility.findMany({
+            include: { courts: true, owner: true }
+        });
+        res.json(facilities);
+    } catch (error: any) {
+        console.error('Error fetching facilities:', error);
+        res.status(500).json({ message: 'Failed to fetch facilities' });
+    }
+};
+
+// Create a facility
 export const createFacility = async (req: Request, res: Response) => {
     try {
-        const { ownerId, name, description, addressLine1, city, state, postalCode, country, shortLocation, sports, amenities, photos } = req.body;
+        const {
+            ownerId, name, description,
+            addressLine1, city, state, postalCode, country,
+            latitude, longitude, sports, amenities, photos
+        } = req.body;
 
         const newFacility = await prisma.facility.create({
             data: {
@@ -16,7 +33,8 @@ export const createFacility = async (req: Request, res: Response) => {
                 state,
                 postalCode,
                 country,
-                shortLocation,
+                latitude,
+                longitude,
                 sports,
                 amenities,
                 photos
@@ -24,41 +42,25 @@ export const createFacility = async (req: Request, res: Response) => {
         });
 
         res.status(201).json(newFacility);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Failed to create facility' });
+    } catch (error: any) {
+        console.error('Error creating facility:', error);
+        res.status(500).json({ message: 'Failed to create facility' });
     }
 };
 
-// Get all facilities
-export const getFacilities = async (req: Request, res: Response) => {
-    try {
-        const facilities = await prisma.facility.findMany({
-            include: { courts: true }
-        });
-        res.json(facilities);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Failed to fetch facilities' });
-    }
-};
-
-// Get facility by ID
-export const getFacilityById = async (req: Request, res: Response) => {
+// Approve a facility (ADMIN only)
+export const approveFacility = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
-        const facility = await prisma.facility.findUnique({
+        
+        const updatedFacility = await prisma.facility.update({
             where: { id },
-            include: { courts: true }
+            data: { approved: true }
         });
 
-        if (!facility) {
-            return res.status(404).json({ error: 'Facility not found' });
-        }
-
-        res.json(facility);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Failed to fetch facility' });
+        res.json(updatedFacility);
+    } catch (error: any) {
+        console.error('Error approving facility:', error);
+        res.status(500).json({ message: 'Failed to approve facility' });
     }
 };
