@@ -6,6 +6,7 @@ import facilityRoutes from './routes/facility.routes.js';
 import courtRoutes from './routes/court.routes.js';
 import bookingRoutes from './routes/booking.routes.js';
 import paymentRoutes from './routes/payment.routes.js';
+import authRoutes from './routes/auth.routes.js';
 
 // Create an instance of PrismaClient
 export const prisma = new PrismaClient();
@@ -28,6 +29,7 @@ app.use('/api/facilities', facilityRoutes);
 app.use('/api/courts', courtRoutes);
 app.use('/api/bookings', bookingRoutes);
 app.use('/api/payments', paymentRoutes);
+app.use('/api/auth', authRoutes);
 
 // Simple route for testing
 app.get('/', (req: Request, res: Response) => {
