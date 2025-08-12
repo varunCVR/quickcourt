@@ -1,239 +1,205 @@
-# QuickCourt - Court Booking Application
+# QuickCourt 🏸
 
-A full-stack court booking application built with Next.js frontend and Express.js backend, featuring real-time availability, payment processing, and user management.
+A modern sports booking platform built with Next.js, PostgreSQL, and Prisma. Book courts, manage facilities, and enjoy seamless sports experiences.
 
-## 🏗️ Project Structure
+## ✨ Features
 
-```
-quickcourt/
-├── backend/                 # Express.js API server
-│   ├── src/
-│   │   ├── controllers/    # Route controllers
-│   │   ├── routes/         # API routes
-│   │   ├── middlewares/    # Custom middlewares
-│   │   ├── services/       # Business logic
-│   │   ├── config/         # Configuration files
-│   │   └── utils/          # Utility functions
-│   ├── prisma/             # Database schema and migrations
-│   └── package.json        # Backend dependencies
-├── frontend/               # Next.js frontend application
-│   ├── src/
-│   │   ├── app/           # Next.js 13+ app directory
-│   │   ├── components/    # Reusable UI components
-│   │   ├── config/        # Frontend configuration
-│   │   └── utils/         # Frontend utilities
-│   └── package.json       # Frontend dependencies
-├── shared/                 # Shared types and utilities
-├── package.json            # Root package.json for project management
-└── README.md              # This file
-```
+- **Multi-role Authentication** - Users, Facility Owners, and Admins
+- **Venue Discovery** - Browse and search sports facilities
+- **Court Booking** - Reserve time slots with payment integration
+- **Facility Management** - Owners can manage courts and bookings
+- **Admin Dashboard** - User management and facility approval
+- **Responsive Design** - Works on all devices
 
 ## 🚀 Quick Start
 
 ### Prerequisites
 
-- Node.js 18+ 
-- npm or yarn
+- Node.js 18+
 - PostgreSQL database
-- Stripe account (for payments)
+- npm or yarn
 
-### 1. Clone and Install Dependencies
+### Installation
 
-```bash
-# Clone the repository
-git clone <your-repo-url>
-cd quickcourt
+1. **Clone and install dependencies**:
 
-# Install all dependencies (root, backend, and frontend)
-npm run install:all
-```
+   ```bash
+   git clone <repository-url>
+   cd quickcourt
+   npm install
+   ```
 
-### 2. Environment Setup
+2. **Setup environment variables**:
 
-#### Backend Environment
-```bash
-cd backend
-cp env.example .env
-```
+   ```bash
+   cp .env.example .env.local
+   ```
 
-Edit `.env` with your configuration:
-```env
-# Server Configuration
-PORT=8000
-NODE_ENV=development
+   Update `.env.local` with your database credentials and secrets.
 
-# Database Configuration
-DATABASE_URL="postgresql://username:password@localhost:5432/quickcourt_db"
+3. **Setup database**:
 
-# JWT Configuration
-JWT_SECRET=your-super-secret-jwt-key-here
-JWT_EXPIRES_IN=7d
+   ```bash
+   # Create PostgreSQL database named 'quickcourt_db'
+   npm run db:generate
+   npm run db:push
+   npm run db:setup
+   ```
 
-# CORS Configuration
-FRONTEND_URL=http://localhost:3000
+4. **Start development server**:
 
-# Stripe Configuration
-STRIPE_SECRET_KEY=sk_test_your_stripe_secret_key_here
-STRIPE_WEBHOOK_SECRET=whsec_your_webhook_secret_here
-```
+   ```bash
+   npm run dev
+   ```
 
-#### Frontend Environment
-```bash
-cd frontend
-cp env.example .env.local
-```
+5. **Access the application**:
+   Open [http://localhost:3000](http://localhost:3000)
 
-Edit `.env.local` with your configuration:
-```env
-# API Configuration
-NEXT_PUBLIC_API_URL=http://localhost:8000
+## 🔐 Test Accounts
 
-# Next.js Configuration
-NEXT_PUBLIC_APP_NAME=QuickCourt
-NEXT_PUBLIC_APP_VERSION=1.0.0
-```
+| Role  | Email                 | Password | Access               |
+| ----- | --------------------- | -------- | -------------------- |
+| Admin | admin@quickcourt.com  | admin123 | Full system access   |
+| Owner | owner1@quickcourt.com | owner123 | Facility management  |
+| User  | alex.tennis@gmail.com | user123  | Booking and browsing |
 
-### 3. Database Setup
+_See [SAMPLE-LOGIN-DATA.md](SAMPLE-LOGIN-DATA.md) for more test accounts_
 
-```bash
-# Generate Prisma client
-npm run db:generate
+## 🛠 Tech Stack
 
-# Run database migrations
-npm run db:migrate
-
-# Seed the database with initial data
-npm run db:seed
-
-# (Optional) Open Prisma Studio to view/edit data
-npm run db:studio
-```
-
-### 4. Start Development Servers
-
-```bash
-# Start both backend and frontend simultaneously
-npm run dev
-
-# Or start them separately:
-npm run dev:backend    # Backend on http://localhost:8000
-npm run dev:frontend   # Frontend on http://localhost:3000
-```
-
-## 🛠️ Available Scripts
-
-### Root Level Scripts
-- `npm run dev` - Start both backend and frontend in development mode
-- `npm run build` - Build both backend and frontend for production
-- `npm run start` - Start both backend and frontend in production mode
-- `npm run install:all` - Install dependencies for all projects
-
-### Database Scripts
-- `npm run db:generate` - Generate Prisma client
-- `npm run db:push` - Push schema changes to database
-- `npm run db:migrate` - Run database migrations
-- `npm run db:seed` - Seed database with sample data
-- `npm run db:studio` - Open Prisma Studio
-
-### Utility Scripts
-- `npm run clean` - Clean build artifacts
-- `npm run lint` - Run linting on all projects
-
-## 🏛️ Architecture
-
-### Backend (Express.js + TypeScript)
-- **Framework**: Express.js 5.x with TypeScript
+- **Frontend**: Next.js 14, React, TypeScript, Tailwind CSS
+- **Backend**: Next.js API Routes
 - **Database**: PostgreSQL with Prisma ORM
-- **Authentication**: JWT-based with refresh tokens
-- **Payment**: Stripe integration
-- **Validation**: Zod schema validation
-- **CORS**: Configured for frontend integration
+- **Authentication**: JWT with bcrypt
+- **Payments**: Stripe integration
+- **Email**: Nodemailer
 
-### Frontend (Next.js 14 + TypeScript)
-- **Framework**: Next.js 14 with App Router
-- **Styling**: Tailwind CSS
-- **State Management**: React hooks + Context API
-- **Type Safety**: TypeScript with shared types
-- **API Integration**: Centralized API configuration
+## 📁 Project Structure
 
-### Shared Components
-- **Types**: Common TypeScript interfaces and enums
-- **Validation**: Shared validation schemas
-- **Constants**: Application-wide constants
+```
+quickcourt/
+├── src/
+│   ├── app/                 # Next.js app router
+│   │   ├── api/            # API endpoints
+│   │   ├── home/           # Dashboard
+│   │   ├── venues/         # Venue listing
+│   │   ├── booking/        # Booking management
+│   │   └── admin/          # Admin panel
+│   ├── components/         # React components
+│   └── lib/               # Utilities & config
+├── prisma/
+│   └── schema.prisma      # Database schema
+├── scripts/
+│   └── setup-db.js        # Database seeding
+└── .env.local            # Environment variables
+```
 
-## 🔐 Authentication Flow
+## 🔧 Available Scripts
 
-1. User registers/logs in via frontend
-2. Backend validates credentials and returns JWT tokens
-3. Frontend stores tokens in localStorage
-4. Subsequent API calls include JWT in Authorization header
-5. Backend middleware validates JWT for protected routes
+```bash
+npm run dev          # Start development server
+npm run build        # Build for production
+npm run start        # Start production server
+npm run lint         # Run ESLint
+npm run db:generate  # Generate Prisma client
+npm run db:push      # Push schema to database
+npm run db:migrate   # Run database migrations
+npm run db:setup     # Seed database with sample data
+```
 
-## 💳 Payment Integration
+## 🌟 Key Features
 
-- Stripe payment intents for secure payment processing
-- Webhook handling for payment status updates
-- Integration with booking system for automatic payment confirmation
+### For Users
 
-## 🗄️ Database Schema
+- Browse venues with search and filters
+- View detailed court information and pricing
+- Make bookings with time slot selection
+- Manage booking history and profile
+- Leave reviews and ratings
 
-The application uses Prisma with the following main entities:
-- **Users**: User accounts and authentication
-- **Facilities**: Sports facilities with location and amenities
-- **Courts**: Individual courts within facilities
-- **Bookings**: Court reservations with time slots
-- **Payments**: Payment records linked to bookings
+### For Facility Owners
 
-## 🔧 Development Workflow
+- Register and manage facilities
+- Add courts with pricing and availability
+- View booking analytics and revenue
+- Manage court schedules
 
-1. **Feature Development**: Work on backend API endpoints first, then frontend components
-2. **Type Safety**: Update shared types when modifying data structures
-3. **Testing**: Test API endpoints with tools like Postman before frontend integration
-4. **Database Changes**: Use Prisma migrations for schema changes
+### For Admins
+
+- User management and moderation
+- Facility approval workflow
+- System analytics and reports
+- Content moderation
+
+## 🔗 API Endpoints
+
+### Authentication
+
+- `POST /api/auth/signup` - User registration
+- `POST /api/auth/login` - User login
+- `POST /api/auth/verify` - Email verification
+
+### Venues & Bookings
+
+- `GET /api/venues` - List venues with filters
+- `GET /api/venues/[id]` - Venue details
+- `POST /api/bookings` - Create booking
+- `GET /api/bookings` - User bookings
+
+### Admin & Owner
+
+- `GET /api/admin/users` - User management
+- `GET /api/owner/facilities` - Facility management
+- `POST /api/facilities` - Create facility
+
+_See [README-BACKEND.md](README-BACKEND.md) for complete API documentation_
+
+## 🎨 UI/UX
+
+- **Modern Design** - Clean, professional interface
+- **Responsive Layout** - Mobile-first approach
+- **Intuitive Navigation** - Role-based menus
+- **Loading States** - Smooth user experience
+- **Form Validation** - Real-time feedback
+
+## 🔒 Security
+
+- Password hashing with bcrypt
+- JWT token authentication
+- Role-based access control
+- Input validation and sanitization
+- Protected API routes
+
+## 📊 Sample Data
+
+The project includes comprehensive sample data:
+
+- 7 test users across all roles
+- 4 premium sports facilities
+- 13 courts with different sports
+- Realistic booking and payment data
+- User reviews and ratings
 
 ## 🚀 Deployment
 
-### Backend Deployment
-```bash
-cd backend
-npm run build
-npm start
-```
+1. **Build the application**:
 
-### Frontend Deployment
-```bash
-cd frontend
-npm run build
-npm start
-```
+   ```bash
+   npm run build
+   ```
 
-### Environment Variables
-Ensure all environment variables are properly set in production, especially:
-- Database connection strings
-- JWT secrets
-- Stripe keys
-- CORS origins
+2. **Set production environment variables**
+
+3. **Deploy to your preferred platform** (Vercel, Netlify, etc.)
 
 ## 🤝 Contributing
 
 1. Fork the repository
 2. Create a feature branch
 3. Make your changes
-4. Update shared types if needed
-5. Test both backend and frontend
-6. Submit a pull request
-
-## 📝 License
-
-This project is licensed under the ISC License.
-
-## 🆘 Support
-
-For support and questions:
-- Check the documentation
-- Review the code comments
-- Open an issue on GitHub
+4. Add tests if applicable
+5. Submit a pull request
 
 ---
 
-**Happy coding! 🎾🏀⚽**
+**QuickCourt** - Making sports booking simple and efficient! 🏆

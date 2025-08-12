@@ -1,0 +1,169 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String   @id @default(cuid())
+  email       String   @unique
+  password    String
+  fullName    String
+  avatar      String?
+  role        Role     @default(USER)
+  isVerified  Boolean  @default(false)
+  otpCode     String?
+  otpExpiry   DateTime?
+  isBanned    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  bookings    Booking[]
+  facilities  Facility[]
+  reviews     Review[]
+  reportsMade Report[] @relation("ReporterReports")
+  reportsReceived Report[] @relation("ReportedUserReports")
+}
+
+model Facility {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  address     String
+  location    String
+  image       String?
+  ownerId     String
+  status      FacilityStatus @default(PENDING)
+  photos      String[]
+  amenities   String[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  owner       User     @relation(fields: [ownerId], references: [id])
+  courts      Court[]
+  bookings    Booking[]
+  reviews     Review[]
+  reports     Report[]
+}
+
+model Court {
+  id          String   @id @default(cuid())
+  name        String
+  facilityId  String
+  sportType   SportType
+  pricePerHour Decimal
+  operatingHours Json
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  facility    Facility @relation(fields: [facilityId], references: [id])
+  bookings    Booking[]
+  timeSlots   TimeSlot[]
+}
+
+model TimeSlot {
+  id          String   @id @default(cuid())
+  courtId     String
+  date        DateTime
+  startTime   String
+  endTime     String
+  isAvailable Boolean  @default(true)
+  isBlocked   Boolean  @default(false)
+  blockReason String?
+  
+  court       Court    @relation(fields: [courtId], references: [id])
+  booking     Booking?
+}
+
+model Booking {
+  id          String   @id @default(cuid())
+  userId      String
+  facilityId  String
+  courtId     String
+  timeSlotId  String   @unique
+  bookingDate DateTime
+  startTime   String
+  endTime     String
+  totalPrice  Decimal
+  status      BookingStatus @default(CONFIRMED)
+  paymentStatus PaymentStatus @default(PENDING)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  user        User     @relation(fields: [userId], references: [id])
+  facility    Facility @relation(fields: [facilityId], references: [id])
+  court       Court    @relation(fields: [courtId], references: [id])
+  timeSlot    TimeSlot @relation(fields: [timeSlotId], references: [id])
+}
+
+model Review {
+  id          String   @id @default(cuid())
+  userId      String
+  facilityId  String
+  rating      Int      @db.SmallInt
+  comment     String?
+  createdAt   DateTime @default(now())
+  
+  user        User     @relation(fields: [userId], references: [id])
+  facility    Facility @relation(fields: [facilityId], references: [id])
+}
+
+model Report {
+  id          String   @id @default(cuid())
+  reporterId  String
+  facilityId  String?
+  userId      String?
+  reason      String
+  description String?
+  status      ReportStatus @default(PENDING)
+  createdAt   DateTime @default(now())
+  
+  reporter    User     @relation("ReporterReports", fields: [reporterId], references: [id])
+  facility    Facility? @relation(fields: [facilityId], references: [id])
+  reportedUser User?   @relation("ReportedUserReports", fields: [userId], references: [id])
+}
+
+enum Role {
+  USER
+  FACILITY_OWNER
+  ADMIN
+}
+
+enum FacilityStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum SportType {
+  BADMINTON
+  TENNIS
+  FOOTBALL
+  BASKETBALL
+  CRICKET
+  TABLE_TENNIS
+  VOLLEYBALL
+  SQUASH
+}
+
+enum BookingStatus {
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  REFUNDED
+}
+
+enum ReportStatus {
+  PENDING
+  RESOLVED
+  DISMISSED
+}
