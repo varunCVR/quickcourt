@@ -1,6 +1,5 @@
 import jwt from 'jsonwebtoken'
 
-// Note: bcrypt operations should be done server-side only
 export const hashPassword = async (password: string): Promise<string> => {
   const bcrypt = require('bcryptjs')
   return await bcrypt.hash(password, 12)

@@ -6,7 +6,6 @@ const prisma = new PrismaClient()
 async function main() {
   console.log('🏟️ Setting up enhanced sample data for QuickCourt...')
 
-  // Create diverse users
   const users = [
     {
       email: 'admin@quickcourt.com',
@@ -73,7 +72,6 @@ async function main() {
     console.log(`✅ User created: ${user.fullName} (${user.email})`)
   }
 
-  // Create premium facilities with detailed information
   const facilities = [
     {
       id: 'premium-sports-hub',
@@ -187,9 +185,7 @@ async function main() {
     console.log(`🏢 Facility created: ${facility.name}`)
   }
 
-  // Create diverse courts with realistic pricing
   const courts = [
-    // Premium Sports Hub Courts
     {
       id: 'premium-badminton-1',
       name: 'Championship Badminton Court 1',
@@ -219,7 +215,6 @@ async function main() {
       pricePerHour: 600
     },
     
-    // Green Valley Courts
     {
       id: 'green-badminton-1',
       name: 'Eco Badminton Court 1',
@@ -242,7 +237,6 @@ async function main() {
       pricePerHour: 1500
     },
     
-    // Urban Sports Arena Courts
     {
       id: 'urban-basketball-1',
       name: 'Pro Basketball Court',
@@ -265,7 +259,6 @@ async function main() {
       pricePerHour: 800
     },
     
-    // Community Sports Center Courts
     {
       id: 'community-badminton-1',
       name: 'Community Badminton Court 1',
@@ -314,7 +307,6 @@ async function main() {
     console.log(`🏟️ Court created: ${court.name}`)
   }
 
-  // Generate time slots for the next 7 days
   const timeSlots = []
   const timeSlotHours = [
     '06:00', '07:00', '08:00', '09:00', '10:00', '11:00',
@@ -332,7 +324,7 @@ async function main() {
           date: date,
           startTime: timeSlotHours[i],
           endTime: timeSlotHours[i + 1],
-          isAvailable: Math.random() > 0.3 // 70% availability
+          isAvailable: Math.random() > 0.3
         })
       }
     }
@@ -344,7 +336,6 @@ async function main() {
   })
   console.log(`⏰ Created ${timeSlots.length} time slots`)
 
-  // Create sample bookings
   const sampleBookings = [
     {
       userId: createdUsers['alex.tennis@gmail.com'].id,
@@ -361,7 +352,7 @@ async function main() {
       userId: createdUsers['lisa.badminton@gmail.com'].id,
       facilityId: 'green-valley-sports',
       courtId: 'green-badminton-1',
-      bookingDate: new Date(Date.now() + 86400000), // Tomorrow
+      bookingDate: new Date(Date.now() + 86400000),
       startTime: '19:00',
       endTime: '20:00',
       totalPrice: 500,
@@ -371,7 +362,6 @@ async function main() {
   ]
 
   for (const bookingData of sampleBookings) {
-    // Find available time slot
     const timeSlot = await prisma.timeSlot.findFirst({
       where: {
         courtId: bookingData.courtId,
@@ -389,7 +379,6 @@ async function main() {
         }
       })
       
-      // Mark time slot as unavailable
       await prisma.timeSlot.update({
         where: { id: timeSlot.id },
         data: { isAvailable: false }
@@ -398,7 +387,6 @@ async function main() {
   }
   console.log('📅 Sample bookings created')
 
-  // Create engaging reviews
   const reviews = [
     {
       userId: createdUsers['alex.tennis@gmail.com'].id,

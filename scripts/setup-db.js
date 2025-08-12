@@ -6,7 +6,6 @@ const prisma = new PrismaClient()
 async function main() {
   console.log('Setting up database...')
 
-  // Create admin user
   const adminPassword = await bcrypt.hash('admin123', 12)
   
   const admin = await prisma.user.upsert({
@@ -23,7 +22,6 @@ async function main() {
 
   console.log('Admin user created:', admin.email)
 
-  // Create sample facility owner
   const ownerPassword = await bcrypt.hash('owner123', 12)
   
   const owner = await prisma.user.upsert({
@@ -40,7 +38,6 @@ async function main() {
 
   console.log('Facility owner created:', owner.email)
 
-  // Create sample user
   const userPassword = await bcrypt.hash('user123', 12)
   
   const user = await prisma.user.upsert({
@@ -57,7 +54,6 @@ async function main() {
 
   console.log('Sample user created:', user.email)
 
-  // Create sample facilities
   const facility1 = await prisma.facility.upsert({
     where: { id: 'facility-1' },
     update: {},
@@ -92,7 +88,6 @@ async function main() {
 
   console.log('Sample facilities created')
 
-  // Create sample courts
   const courts = await Promise.all([
     prisma.court.upsert({
       where: { id: 'court-badminton-1' },
@@ -158,7 +153,6 @@ async function main() {
 
   console.log('Sample courts created:', courts.length)
 
-  // Create sample time slots for today and tomorrow
   const today = new Date()
   const tomorrow = new Date(today)
   tomorrow.setDate(tomorrow.getDate() + 1)
@@ -187,7 +181,6 @@ async function main() {
 
   console.log('Sample time slots created')
 
-  // Create sample reviews
   await prisma.review.createMany({
     data: [
       {
